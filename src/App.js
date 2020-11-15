@@ -5,8 +5,8 @@ import './App.css';
 
 
 const style = {
-  height: "30",
-  border: "1 px solid blue",
+  height: 30,
+  border: "1px solid blue",
   margin: 10,
   padding: 5
 };
