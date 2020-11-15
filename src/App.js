@@ -1,24 +1,39 @@
-import logo from './logo.svg';
+import React, { useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import './App.css';
 
 function App() {
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+
+      <div
+        id="scrollableDiv"
+        style={{
+          height: 300,
+          overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column-reverse',
+        }}
+      >
+        {/*Put the scroll bar always on the bottom*/}
+        <InfiniteScroll
+          dataLength={this.state.items.length}
+          next={this.fetchMoreData}
+          style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+          inverse={true} //
+          hasMore={true}
+          loader={<h4>Loading...</h4>}
+          scrollableTarget="scrollableDiv"
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          {this.state.items.map((_, index) => (
+            <div style={style} key={index}>
+              div - #{index}
+            </div>
+          ))}
+        </InfiniteScroll>
+      </div>
+
   );
 }
 
