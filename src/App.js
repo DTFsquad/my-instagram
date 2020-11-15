@@ -1,33 +1,49 @@
 import React from "react";
-import { render } from "react-dom";
+import {toJson} from 'unsplash-js'
 import InfiniteScroll from "react-infinite-scroll-component";
+import unsplash from './utils/unsplash'
 import './App.css';
-
-
-const style = {
-  height: 30,
-  border: "1px solid blue",
-  margin: 10,
-  padding: 5
-};
 
 class App extends React.Component {
   state = {
-    items: Array.from({ length: 30 }),
-    hasMore: true
+    photos: [],
+    hasMore: true,
+    page: 1,
+    isLoading: false
   };
 
   fetchMoreData = () => {
-    if (this.state.items.length >= 500) {
-      this.setState({ hasMore: false });
-      return;
-    }
-    setTimeout(() => {
+    this.setState({
+      isLoading: true
+    });
+    if(this.state.isLoading) return;
+    unsplash.photos.listPhotos(this.state.page, 30, "latest")
+    .then(toJson)
+    .then(json => {
       this.setState({
-        items: this.state.items.concat(Array.from({ length: 20 }))
-      });
-    }, 500);
+        page: this.state.page + 1,
+        photos: [...this.state.photos, ...json],
+        hasMore: !!json.length, 
+        isLoading: false
+      })
+    });
   };
+
+  componentDidMount() {
+    this.setState({
+      isLoading: true
+    });
+    unsplash.photos.listPhotos(this.state.page, 30, "latest")
+    .then(toJson)
+    .then(json => {
+      this.setState({
+        page: this.state.page + 1,
+        photos: [...this.state.photos, ...json],
+        hasMore: !!json.length,
+        isLoading: false
+      })
+    });
+  }
 
   render() {
     return (
@@ -35,7 +51,7 @@ class App extends React.Component {
         <h1>Example: My Instagram</h1>
         <hr />
         <InfiniteScroll
-          dataLength={this.state.items.length}
+          dataLength={this.state.photos.length}
           next={this.fetchMoreData}
           hasMore={this.state.hasMore}
           loader={<h4>Loading...</h4>}
@@ -46,9 +62,9 @@ class App extends React.Component {
             </p>
           }
         >
-          {this.state.items.map((i, index) => (
-            <div style={style} key={index}>
-              div - #{index}
+          {this.state.photos.map((photo, index) => (
+            <div  key={photo.id}>
+              <img src={photo.urls.regular} />
             </div>
           ))}
         </InfiniteScroll>
@@ -56,7 +72,5 @@ class App extends React.Component {
     );
   }
 }
-
-render(<App />, document.getElementById("root"));
 
 export default App;
