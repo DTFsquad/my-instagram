@@ -1,40 +1,62 @@
-import React, { useState } from "react";
+import React from "react";
+import { render } from "react-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import './App.css';
 
-function App() {
 
+const style = {
+  height: "30",
+  border: "1 px solid blue",
+  margin: 10,
+  padding: 5
+};
 
-  return (
+class App extends React.Component {
+  state = {
+    items: Array.from({ length: 30 }),
+    hasMore: true
+  };
 
-      <div
-        id="scrollableDiv"
-        style={{
-          height: 300,
-          overflow: 'auto',
-          display: 'flex',
-          flexDirection: 'column-reverse',
-        }}
-      >
-        {/*Put the scroll bar always on the bottom*/}
+  fetchMoreData = () => {
+    if (this.state.items.length >= 500) {
+      this.setState({ hasMore: false });
+      return;
+    }
+    setTimeout(() => {
+      this.setState({
+        items: this.state.items.concat(Array.from({ length: 20 }))
+      });
+    }, 500);
+  };
+
+  render() {
+    return (
+      <div>
+        <h1>Example: My Instagram</h1>
+        <hr />
         <InfiniteScroll
           dataLength={this.state.items.length}
           next={this.fetchMoreData}
-          style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
-          inverse={true} //
-          hasMore={true}
+          hasMore={this.state.hasMore}
           loader={<h4>Loading...</h4>}
-          scrollableTarget="scrollableDiv"
+          height={400}
+          endMessage={
+            <p style={{ textAlign: "center" }}>
+              <b>Yay! You have seen it all</b>
+            </p>
+          }
         >
-          {this.state.items.map((_, index) => (
+          {this.state.items.map((i, index) => (
             <div style={style} key={index}>
               div - #{index}
             </div>
           ))}
         </InfiniteScroll>
       </div>
-
-  );
+    );
+  }
 }
+
+render(<App />, document.getElementById("root"));
 
 export default App;
