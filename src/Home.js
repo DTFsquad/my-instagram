@@ -1,10 +1,11 @@
-import React from "react";
-import {toJson} from 'unsplash-js'
+import React, { useState, useRef } from "react";
+import { toJson } from 'unsplash-js'
 import InfiniteScroll from "react-infinite-scroll-component";
-import unsplash from './utils/unsplash'
-import './App.css';
+import unsplash from './utils/unsplash';
+import Card from './components/Card/index';
+import './Home.css';
 
-class App extends React.Component {
+class Home extends React.Component {
   state = {
     photos: [],
     hasMore: true,
@@ -16,17 +17,17 @@ class App extends React.Component {
     this.setState({
       isLoading: true
     });
-    if(this.state.isLoading) return;
+    if (this.state.isLoading) return;
     unsplash.photos.listPhotos(this.state.page, 30, "latest")
-    .then(toJson)
-    .then(json => {
-      this.setState({
-        page: this.state.page + 1,
-        photos: [...this.state.photos, ...json],
-        hasMore: !!json.length, 
-        isLoading: false
-      })
-    });
+      .then(toJson)
+      .then(json => {
+        this.setState({
+          page: this.state.page + 1,
+          photos: [...this.state.photos, ...json],
+          hasMore: !!json.length,
+          isLoading: false
+        })
+      });
   };
 
   componentDidMount() {
@@ -34,15 +35,15 @@ class App extends React.Component {
       isLoading: true
     });
     unsplash.photos.listPhotos(this.state.page, 30, "latest")
-    .then(toJson)
-    .then(json => {
-      this.setState({
-        page: this.state.page + 1,
-        photos: [...this.state.photos, ...json],
-        hasMore: !!json.length,
-        isLoading: false
-      })
-    });
+      .then(toJson)
+      .then(json => {
+        this.setState({
+          page: this.state.page + 1,
+          photos: [...this.state.photos, ...json],
+          hasMore: !!json.length,
+          isLoading: false
+        })
+      });
   }
 
   render() {
@@ -50,6 +51,7 @@ class App extends React.Component {
       <div>
         <h1>Example: My Instagram</h1>
         <hr />
+
         <InfiniteScroll
           dataLength={this.state.photos.length}
           next={this.fetchMoreData}
@@ -63,8 +65,10 @@ class App extends React.Component {
           }
         >
           {this.state.photos.map((photo, index) => (
-            <div  key={photo.id}>
-              <img src={photo.urls.regular} />
+            <div key={photo.id}>
+              <Card>
+                <img src={photo.urls.regular} alt="" />
+              </Card>
             </div>
           ))}
         </InfiniteScroll>
@@ -73,4 +77,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default Home;

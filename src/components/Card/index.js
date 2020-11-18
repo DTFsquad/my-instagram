@@ -1,10 +1,10 @@
 import React from 'react';
-import {Container} from './card.styles'
+import { Container } from './card.styles'
 
-const Card = () => {
+const Card = (image) => {
     return (
         <Container>
-            Cool
+            <img className={Card.image} src={image} alt="placeholder"></img>
         </Container>
     )
 }
